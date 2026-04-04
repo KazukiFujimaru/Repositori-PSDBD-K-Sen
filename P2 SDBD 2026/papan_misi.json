@@ -1,0 +1,37 @@
+[
+  {
+    "id_misi": 1,
+    "nama_misi": "Membuat Landing Page Profil Organisasi",
+    "divisi": "Web Developer",
+    "tingkat_kesulitan": "Medium",
+    "status_selesai": false
+  },
+  {
+    "id_misi": 2,
+    "nama_misi": "Eksplorasi Mekanik Pergerakan Karakter 2D",
+    "divisi": "Game Developer",
+    "tingkat_kesulitan": "Easy",
+    "status_selesai": true
+  },
+  {
+    "id_misi": 3,
+    "nama_misi": "Audit Keamanan Jaringan Wi-Fi Lab",
+    "divisi": "Cyber Security",
+    "tingkat_kesulitan": "Hard",
+    "status_selesai": false
+  },
+  {
+    "id_misi": 4,
+    "nama_misi": "Merakit Sensor Suhu Ruangan dengan NodeMCU",
+    "divisi": "IoT",
+    "tingkat_kesulitan": "Medium",
+    "status_selesai": true
+  },
+  {
+    "id_misi": 5,
+    "nama_misi": "Mabar Rutin Game Party Mahasiswa",
+    "divisi": "Gaming Kasual",
+    "tingkat_kesulitan": "Easy",
+    "status_selesai": false
+  }
+]

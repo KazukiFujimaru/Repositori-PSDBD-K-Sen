@@ -1,0 +1,6 @@
+id_misi,nama_misi,divisi,tingkat_kesulitan,status_selesai
+1,Membuat Landing Page Profil Organisasi,Web Developer,Medium,false
+2,Eksplorasi Mekanik Pergerakan Karakter 2D,Game Developer,Easy,true
+3,Audit Keamanan Jaringan Wi-Fi Lab,Cyber Security,Hard,false
+4,Merakit Sensor Suhu Ruangan dengan NodeMCU,IoT,Medium,true
+5,Latihan Scrim Tim Valorant Internal,Gaming Kompetitif,Easy,false
