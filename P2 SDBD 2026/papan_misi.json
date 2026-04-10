@@ -33,5 +33,12 @@
     "divisi": "Gaming Kasual",
     "tingkat_kesulitan": "Easy",
     "status_selesai": false
+  },
+  {
+    "id_misi": 6,
+    "nama_misi": "Contoh",
+    "divisi": "Contoh",
+    "tingkat_kesulitan": "Medium",
+    "status_selesai": false
   }
 ]
