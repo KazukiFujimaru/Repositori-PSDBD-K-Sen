@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Reaction Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; border: 1px solid #333; }
+        h2 { color: #00c6ff; margin-top: 0;}
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { font-size: 14px; color: #aaa; margin-bottom: 5px; display: block; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; border-radius: 8px; margin-top: 10px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
+        .start { background: #00e676; color: #000; }
+        .start:hover { background: #00c853; box-shadow: 0 0 15px #00e676; }
+        .reset { background: transparent; border: 2px solid #ff1744; color: #ff1744; }
+        .reset:hover { background: #ff1744; color: white; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🛠️ Admin Control</h2>
+        
+        <div class="input-group">
+            <label>Waktu Tunggu sebelum Mulai (detik):</label>
+            <input type="number" id="wait_time" value="5" min="1">
+        </div>
+        
+        <div class="input-group">
+            <label>Batas Waktu Tombol Aktif (detik):</label>
+            <input type="number" id="active_time" value="3" min="1">
+        </div>
+        
+        <button class="start" onclick="startGame()">Mulai Game 🚀</button>
+        <button class="reset" onclick="resetGame()">Reset Ruangan 🔄</button>
+    </div>
+
+    <script>
+        const socket = io();
+
+        function startGame() {
+            const wait_time = document.getElementById('wait_time').value;
+            const active_time = document.getElementById('active_time').value;
+            socket.emit('start_game', { wait_time: wait_time, active_time: active_time });
+        }
+
+        function resetGame() {
+            socket.emit('reset_game');
+        }
+    </script>
+</body>
+</html>

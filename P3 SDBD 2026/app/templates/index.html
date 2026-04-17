@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Reaction Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .card { background: rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        input { padding: 12px; font-size: 18px; width: 80%; border-radius: 8px; border: none; margin-bottom: 20px; text-align: center; outline: none; }
+        button { padding: 12px 30px; font-size: 18px; font-weight: bold; cursor: pointer; background: #00c6ff; background: linear-gradient(to right, #00c6ff, #0072ff); color: white; border: none; border-radius: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>⚡ Reaction Game ⚡</h2>
+        <p>Masukkan Nickname Anda untuk bergabung</p>
+        <input type="text" id="nickname" placeholder="Nickname..." autocomplete="off">
+        <br>
+        <button onclick="joinRoom()">Masuk Ruangan</button>
+    </div>
+
+    <script>
+        function joinRoom() {
+            let nick = document.getElementById('nickname').value;
+            if(nick.trim() !== "") {
+                sessionStorage.setItem('nickname', nick);
+                window.location.href = "/room";
+            } else {
+                alert("Nickname tidak boleh kosong!");
+            }
+        }
+        // Bisa enter untuk login
+        document.getElementById('nickname').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') joinRoom();
+        });
+    </script>
+</body>
+</html>

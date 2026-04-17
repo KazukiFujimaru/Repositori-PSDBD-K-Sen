@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arena - Reaction Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background: linear-gradient(to right, #2c5364, #203a43, #0f2027); color: white; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        #game-area { display: none; margin-top: 10vh; }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 204, 0, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); } }
+        #reaction-btn { width: 280px; height: 280px; border-radius: 50%; font-size: 32px; font-weight: 900; border: none; cursor: pointer; color: white; transition: all 0.2s; outline: none; -webkit-tap-highlight-color: transparent; }
+        .waiting-btn { background: #555; cursor: not-allowed !important; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5); }
+        .ready-btn { background: #ffcc00; color: #333 !important; animation: pulse 1.5s infinite; box-shadow: 0 10px 30px rgba(255, 204, 0, 0.4); }
+        .play-btn { background: #00e676; box-shadow: 0 0 40px #00e676, inset 0 -10px 20px rgba(0,0,0,0.3); transform: scale(1.05); }
+        
+        #status-text { font-size: 28px; font-weight: bold; margin-top: 30px; min-height: 40px; }
+        .disqualified { color: #ff1744; text-shadow: 0 0 10px red; }
+        .success { color: #00e676; text-shadow: 0 0 10px lime; }
+        
+        .card { background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; backdrop-filter: blur(5px); margin-top: 20px;}
+        ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .player-badge { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 20px; font-weight: bold; }
+        .lb-item { width: 100%; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; margin-bottom: 8px;}
+        .rank-1 { background: linear-gradient(45deg, #bf953f, #fcf6ba); color: black; font-weight: bold; transform: scale(1.05); }
+        .rank-2 { background: linear-gradient(45deg, #bdc3c7, #2c3e50); font-weight: bold; }
+        .rank-3 { background: linear-gradient(45deg, #cd7f32, #f5deb3); color: black; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="welcome-msg"></h2>
+        
+        <div id="waiting-area" class="card">
+            <h3>📡 Partisipan Terhubung: <span id="player-count">0</span></h3>
+            <ul id="player-list"></ul>
+        </div>
+
+        <div id="game-area">
+            <button id="reaction-btn" class="waiting-btn">TUNGGU</button>
+            <div id="status-text"></div>
+        </div>
+
+        <div id="leaderboard-area" class="card" style="display: none;">
+            <h2>🏆 LEADERBOARD 🏆</h2>
+            <div id="leaderboard-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const nickname = sessionStorage.getItem('nickname');
+        
+        if (!nickname) window.location.href = "/";
+        document.getElementById('welcome-msg').innerHTML = `Halo, <b>${nickname}</b>!`;
+        
+        socket.emit('join', {nickname: nickname});
+
+        socket.on('update_players', (players) => {
+            const list = document.getElementById('player-list');
+            list.innerHTML = "";
+            document.getElementById('player-count').innerText = players.length;
+            players.forEach(p => {
+                let statusIcon = p.status === 'disqualified' ? '❌' : (p.status === 'finished' ? '✅' : '⏳');
+                list.innerHTML += `<li class="player-badge">${p.nickname} ${statusIcon}</li>`;
+            });
+        });
+
+        socket.on('game_ready', () => {
+            document.getElementById('waiting-area').style.display = 'none';
+            document.getElementById('leaderboard-area').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            
+            let btn = document.getElementById('reaction-btn');
+            btn.className = "ready-btn";
+            btn.innerText = "SIAP-SIAP!";
+            document.getElementById('status-text').innerText = "";
+        });
+
+        socket.on('game_start', () => {
+            let btn = document.getElementById('reaction-btn');
+            btn.className = "play-btn";
+            btn.innerText = "KLIK SEKARANG!";
+        });
+
+        socket.on('player_status', (data) => {
+            let statusText = document.getElementById('status-text');
+            if(data.status === 'disqualified') {
+                statusText.innerHTML = "<span class='disqualified'>DIKUALIFIKASI! ❌</span>";
+                document.getElementById('reaction-btn').disabled = true;
+            } else if (data.status === 'finished') {
+                statusText.innerHTML = `<span class='success'>Waktu Anda: ${data.time}s ⚡</span>`;
+                document.getElementById('reaction-btn').disabled = true;
+            }
+        });
+
+        socket.on('game_over', (data) => {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('leaderboard-area').style.display = 'block';
+            
+            const lbList = document.getElementById('leaderboard-list');
+            lbList.innerHTML = "";
+            
+            if(data.leaderboard.length === 0) {
+                lbList.innerHTML = "<p>Belum ada partisipan yang bergabung 😢</p>";
+            } else {
+                let rank = 1;
+                data.leaderboard.forEach((p) => {
+                    if (p.status === 'finished') {
+                        let rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+                        let medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank}`));
+                        lbList.innerHTML += `
+                            <div class="lb-item ${rankClass}">
+                                <span>${medal} <b>${p.nickname}</b></span>
+                                <span>${p.time}s</span>
+                            </div>`;
+                        rank++;
+                    } else {
+                        lbList.innerHTML += `
+                            <div class="lb-item" style="background: rgba(255, 23, 68, 0.15); border-left: 4px solid #ff1744; opacity: 0.8;">
+                                <span>❌ <b>${p.nickname}</b></span>
+                                <span style="color: #ff1744; font-size: 14px; font-weight:bold; letter-spacing: 1px;">DISKUALIFIKASI</span>
+                            </div>`;
+                    }
+                });
+            }
+        });
+
+        socket.on('game_reset', () => {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('leaderboard-area').style.display = 'none';
+            document.getElementById('waiting-area').style.display = 'block';
+            document.getElementById('reaction-btn').disabled = false;
+            document.getElementById('reaction-btn').className = "waiting-btn";
+            document.getElementById('reaction-btn').innerText = "TUNGGU";
+        });
+
+        document.getElementById('reaction-btn').addEventListener('pointerdown', (e) => {
+            e.preventDefault(); 
+            socket.emit('click_button');
+        });
+    </script>
+</body>
+</html>
