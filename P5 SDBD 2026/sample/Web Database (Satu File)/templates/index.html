@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><title>Buku Kontak</title></head>
+<body style="font-family: Arial; padding: 20px;">
+    <h2>Buku Kontak (Satu File)</h2>
+    
+    <form action="/tambah" method="POST" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+        <label>Nama:</label>
+        <input type="text" name="input_nama" required>
+        <label>No HP:</label>
+        <input type="text" name="input_nohp" required>
+        <button type="submit">Tambah Kontak</button>
+    </form>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>No HP</th>
+            <th>Aksi</th>
+        </tr>
+        {% for baris in data_kontak %}
+        <tr>
+            <td>{{ baris[0] }}</td>
+            <td>{{ baris[1] }}</td>
+            <td>{{ baris[2] }}</td>
+            <td>
+                <a href="/edit/{{ baris[0] }}">Edit</a> | 
+                <a href="/hapus/{{ baris[0] }}" onclick="return confirm('Yakin hapus?')">Hapus</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

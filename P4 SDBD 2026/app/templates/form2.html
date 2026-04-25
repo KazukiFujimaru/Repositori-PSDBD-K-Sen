@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4 card p-4">
+        <h3 class="text-danger">Form 2: Vulnerable</h3>
+        <p class="text-muted small">Coba masukkan: <code>' OR '1'='1</code> di kolom username.</p>
+        <form action="/form2" method="POST">
+            <input type="text" name="username" placeholder="Username" class="form-control mb-2" required>
+            <input type="password" name="password" placeholder="Password" class="form-control mb-2" required>
+            <button class="btn btn-danger w-100">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

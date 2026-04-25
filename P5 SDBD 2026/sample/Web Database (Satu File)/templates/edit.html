@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Kontak</title></head>
+<body style="font-family: Arial; padding: 20px;">
+    <h2>Edit Kontak</h2>
+    
+    <form action="/edit_proses" method="POST">
+        <input type="hidden" name="input_id" value="{{ data_lama[0] }}">
+        
+        <label>Nama:</label><br>
+        <input type="text" name="input_nama" value="{{ data_lama[1] }}" required><br><br>
+        
+        <label>No HP:</label><br>
+        <input type="text" name="input_nohp" value="{{ data_lama[2] }}" required><br><br>
+        
+        <button type="submit">Simpan Perubahan</button>
+        <a href="/">Batal</a>
+    </form>
+</body>
+</html>

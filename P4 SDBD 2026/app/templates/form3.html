@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4 card p-4">
+        <h3>Form 3: Raw Error DB</h3>
+        <p class="text-muted small">Coba kosongkan salah satu kolom untuk memicu error SQLite.</p>
+        {% if error %}
+            <div class="alert alert-warning" style="font-family: monospace; font-size: 0.8rem;">
+                <strong>Database Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+        <form action="/form3" method="POST">
+            <input type="text" name="username" placeholder="Username" class="form-control mb-2">
+            <input type="password" name="password" placeholder="Password" class="form-control mb-2">
+            <button class="btn btn-warning w-100">Insert to DB2</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
